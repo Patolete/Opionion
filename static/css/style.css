@@ -135,7 +135,7 @@ body {
    border: 3px solid #000000;
    height: 50px;
    width: 250px;
-   border-radius: 25px;
+   border-radius: 15px;
    background-color: transparent;
    justify-content: center;
    text-align: center;
@@ -153,7 +153,7 @@ body {
    border: 3px solid #000000;
    height: 30px;
    width: 100px;
-   border-radius: 25px;
+   border-radius: 15px;
    background-color: transparent;
    justify-content: center;
    text-align: center;
@@ -195,6 +195,7 @@ body {
 
 .search-box {
    margin-top: 2.9%;
+   color: #000000;
    font-family: inknut-antiqua-regular;
    display: flex;
    gap: 10px;
@@ -204,22 +205,24 @@ body {
 .search-box input {
    font-family: inknut-antiqua-regular;
    padding: 10px 15px;
-   border: 2px solid #e0e0e0;
-   border-radius: 8px;
+   color: #000000;
+   border: 2px solid #000000;
+   border-radius: 15px;
    font-size: 14px;
-   width: 200px;
+   width: 800px;
 }
 
 .search-box input:focus {
    outline: none;
-   border-color: #300c1d;
+   color: #000000;
+   border-color: #000000;
 }
 
 .btn {
    padding: 10px 20px;
    font-family: inknut-antiqua-semibold;
    border: none;
-   border-radius: 8px;
+   border-radius: 15px;
    font-size: 14px;
    font-weight: 600;
    cursor: pointer;
@@ -229,7 +232,7 @@ body {
 }
 
 .btn-primary {
-   background: linear-gradient(135deg, #300c1d, #000000);
+   background: linear-gradient(135deg, #000000, #000000);
    color: white;
 }
 
@@ -241,12 +244,12 @@ body {
 .btn-secondary {
    background: #f8f9fa;
    color: #000000;
-   border: 2px solid #e0e0e0;
+   border: 2px solid #000000;
 }
 
 .btn-secondary:hover {
    background: #e9ecef;
-   border-color: #ccc;
+   border-color: #000000;
 }
 
 @keyframes spin {
@@ -301,7 +304,7 @@ body {
 
 .alert {
    padding: 15px;
-   border-radius: 8px;
+   border-radius: 15px;
    margin-bottom: 20px;
    display: none;
 }
@@ -309,11 +312,11 @@ body {
 .alert.error {
    background: #f8d7da;
    color: #721c24;
-   border: 1px solid #f5c6cb;
+   border: 1px solid #000000;
 }
 
 .alert.success {
    background: #d4edda;
    color: #155724;
-   border: 1px solid #c3e6cb;
+   border: 1px solid #000000;
 }
