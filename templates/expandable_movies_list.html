@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opinion - Películas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inknut Antiqua', serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header con logo */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .cebolla-logo {
+            width: 50px;
+            height: 50px;
+            margin: 0 10px;
+        }
+
+        /* Barra de búsqueda superior */
+        .search-bar-top {
+            background: #e8e8e8;
+            border: 2px solid #333;
+            border-radius: 25px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 30px;
+            outline: none;
+        }
+
+        /* Contenedor de líneas onduladas */
+        .waves-container {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            margin: 20px 0;
+        }
+
+        .wave-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+        }
+
+        .wave-line:first-child {
+            top: 0;
+            clip-path: polygon(0 50%, 15% 20%, 30% 50%, 45% 80%, 60% 50%, 75% 20%, 90% 50%, 100% 50%, 100% 100%, 0% 100%);
+        }
+
+        .wave-line:last-child {
+            top: 10px;
+            clip-path: polygon(0 50%, 10% 80%, 25% 20%, 40% 80%, 55% 20%, 70% 80%, 85% 20%, 100% 50%, 100% 100%, 0% 100%);
+        }
+
+        /* Lista de películas */
+        .movies-list {
+            margin: 30px 0;
+        }
+
+        /* Card de película */
+        .movie-item {
+            background: #8b6b9e;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .movie-item.expanded {
+            background: #8b6b9e;
+        }
+
+        /* Header de la película (siempre visible) */
+        .movie-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .movie-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .movie-title-input {
+            flex: 1;
+            background: #e8e8e8;
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 500;
+            margin-right: 15px;
+            pointer-events: none;
+        }
+
+        .movie-author {
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 15px;
+        }
+
+        .movie-icon {
+            width: 35px;
+            height: 35px;
+        }
+
+        /* Contenido expandible */
+        .movie-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 25px;
+        }
+
+        .movie-item.expanded .movie-content {
+            max-height: 500px;
+            padding: 0 25px 25px 25px;
+        }
+
+        .movie-description {
+            background: #e8e8e8;
+            border: 2px solid #4a3654;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Comentarios dentro de película expandida */
+        .comments-section {
+            margin-top: 15px;
+        }
+
+        .comment-item {
+            background: #7a5a8e;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-text {
+            flex: 1;
+            background: #e8e8e8;
+            border: 2px solid #333;
+            border-radius: 18px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            margin-right: 12px;
+        }
+
+        .comment-author {
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        /* Botón volver */
+        .volver-button {
+            display: inline-block;
+            background: #8b6b9e;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #6b4b7e;
+        }
+
+        .volver-button:hover {
+            background: #6b4b7e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 107, 158, 0.3);
+        }
+
+        /* Animación de expansión */
+        @keyframes expandDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .movie-item.expanded .movie-content > * {
+            animation: expandDown 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-container {
+                font-size: 2rem;
+            }
+
+            .cebolla-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .movie-header {
+                flex-wrap: wrap;
+                padding: 15px;
+            }
+
+            .movie-title-input {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .movie-author {
+                font-size: 0.8rem;
+            }
+
+            .comment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .comment-text {
+                margin-bottom: 8px;
+                margin-right: 0;
+                width: 100%;
+            }
+        }
+
+        /* Iconos de cebolla de colores */
+        .onion-icon {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .onion-icon.blue {
+            background: linear-gradient(135deg, #64b5f6, #2196f3);
+        }
+
+        .onion-icon.yellow {
+            background: linear-gradient(135deg, #ffd54f, #ffc107);
+        }
+
+        .onion-icon::before {
+            content: '🧅';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="index.html" class="logo-container">
+                <span>Opi</span>
+                <span class="cebolla-logo">🧅</span>
+                <span>nion</span>
+            </a>
+        </div>
+
+        <!-- Barra de búsqueda superior -->
+        <input type="text" class="search-bar-top" placeholder="Thunderbolts" id="searchTop">
+
+        <!-- Líneas onduladas -->
+        <div class="waves-container">
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+        </div>
+
+        <!-- Lista de películas -->
+        <div class="movies-list" id="moviesList">
+            <!-- Las películas se cargarán aquí dinámicamente -->
+        </div>
+
+        <!-- Líneas onduladas inferiores -->
+        <div class="waves-container">
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+        </div>
+
+        <!-- Botón volver -->
+        <a href="index.html" class="volver-button">Volver</a>
+    </div>
+
+    <script>
+        // Datos de ejemplo de películas
+        const movies = [
+            {
+                id: 1,
+                title: "Thunderbolts",
+                author: "Topacio33",
+                iconColor: "blue",
+                description: "lorem ipsum bla bla bla bla. Una historia épica sobre un grupo de antihéroes que deben unirse para salvar el mundo de una amenaza que ni siquiera ellos comprenden del todo.",
+                comments: [
+                    { text: "7B5078", author: "(Nombre usuario)" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Thunderbolts",
+                author: "(Nombre usuario)",
+                iconColor: "yellow",
+                description: "Una película llena de acción y suspenso que te mantendrá al borde de tu asiento desde el principio hasta el final.",
+                comments: []
+            },
+            {
+                id: 3,
+                title: "Thunderbolts",
+                author: "(Nombre usuario)",
+                iconColor: "yellow",
+                description: "Excelente cinematografía y actuaciones sobresalientes. Una obra maestra del cine moderno.",
+                comments: []
+            },
+            {
+                id: 4,
+                title: "Thunderbolts",
+                author: "(Nombre usuario)",
+                iconColor: "yellow",
+                description: "La trama es predecible pero la ejecución es impecable. Recomendada para fans del género.",
+                comments: []
+            },
+            {
+                id: 5,
+                title: "Thunderbolts",
+                author: "(Nombre usuario)",
+                iconColor: "blue",
+                description: "Una experiencia cinematográfica única que combina elementos de acción, drama y comedia de manera magistral.",
+                comments: []
+            }
+        ];
+
+        // Función para renderizar películas
+        function renderMovies() {
+            const container = document.getElementById('moviesList');
+            container.innerHTML = '';
+
+            movies.forEach(movie => {
+                const movieItem = document.createElement('div');
+                movieItem.className = 'movie-item';
+                movieItem.dataset.id = movie.id;
+
+                let commentsHTML = '';
+                if (movie.comments && movie.comments.length > 0) {
+                    commentsHTML = '<div class="comments-section">';
+                    movie.comments.forEach(comment => {
+                        commentsHTML += `
+                            <div class="comment-item">
+                                <div class="comment-text">${comment.text}</div>
+                                <div class="comment-author">By ${comment.author}</div>
+                            </div>
+                        `;
+                    });
+                    commentsHTML += '</div>';
+                }
+
+                movieItem.innerHTML = `
+                    <div class="movie-header" onclick="toggleMovie(${movie.id})">
+                        <input type="text" class="movie-title-input" value="${movie.title}" readonly>
+                        <span class="movie-author">By ${movie.author}</span>
+                        <span class="onion-icon ${movie.iconColor}"></span>
+                    </div>
+                    <div class="movie-content">
+                        <div class="movie-description">
+                            ${movie.description}
+                        </div>
+                        ${commentsHTML}
+                    </div>
+                `;
+
+                container.appendChild(movieItem);
+            });
+        }
+
+        // Función para expandir/contraer película
+        function toggleMovie(id) {
+            const movieItem = document.querySelector(`.movie-item[data-id="${id}"]`);
+            const allMovies = document.querySelectorAll('.movie-item');
+            
+            // Cerrar todas las demás películas
+            allMovies.forEach(item => {
+                if (item.dataset.id != id) {
+                    item.classList.remove('expanded');
+                }
+            });
+
+            // Toggle de la película clickeada
+            movieItem.classList.toggle('expanded');
+        }
+
+        // Función de búsqueda
+        document.getElementById('searchTop').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const movieItems = document.querySelectorAll('.movie-item');
+
+            movieItems.forEach(item => {
+                const title = item.querySelector('.movie-title-input').value.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMovies();
+            console.log('✅ Lista de películas cargada');
+        });
+
+        // Cerrar película al presionar ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.movie-item').forEach(item => {
+                    item.classList.remove('expanded');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
