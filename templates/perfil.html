@@ -12,24 +12,22 @@
 <body>
    <div class="container">
       <div class="header">
-         <a href="file:///C:/Users/Patricio/Downloads/Opionion/templates/index.html" class="logo">
+         <a href='/' class="logo">
             Opi
          </a>
-         <a href="file:///C:/Users/Patricio/Downloads/Opionion/templates/index.html">
-            <img href="file:///C:/Users/Patricio/Downloads/Opionion/templates/index.html" class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo">
+         <a href='/'>
+            <img href='/' class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo">
          </a>
-         <a href="file:///C:/Users/Patricio/Downloads/Opionion/templates/index.html" class="logo">
+         <a href='/' class="logo">
             nion
          </a>
       </div>
-   
-      <img class="wave" src="../static/img/ondas.png">
-            
-      <nav class="navigation">
-         <a href="#usuarios" class="nav-button">Usuarios</a>
-         <a href="#peliculas" class="nav-button">Películas</a>
-         <a href="#perfil" class="nav-button">Perfil</a>
-      </nav>
    </div>
+   <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Nombre ">
+      <button class="btn btn-secondary" onclick="searchSessions()">Buscar</button>
+   </div>
+   <img class="wave" src="../static/img/ondas.png">
+   <a href='/' class="volver-button">Volver</a>
 </body>
 </html>

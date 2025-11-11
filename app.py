@@ -20,7 +20,7 @@ def perfil():
 
 @app.route('/peliculas/buscador')
 def buscador_peliculas():
-    return render_template('expandable_movies_lis.html')
+    return render_template('expandable_movies_list.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
