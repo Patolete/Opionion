@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Opinion - Buscador</title>
+   <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+   <div class="container">
+      <div class="header">
+         <a href="//" class="logo">Opi</a>
+         <a href="/">
+            <img class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo">
+         </a>
+         <a href="/" class="logo">nion</a>
+      </div>
+   </div>
+
+   <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Nombre de la película o usuario">
+      <button class="btn btn-secondary" onclick="searchSessions()">Buscar</button>
+   </div>
+
+   <img class="wave" src="../static/img/ondas.png">
+   
+   <div id="mensaje" style="text-align: center; padding: 20px; color: #666;"></div>
+
+   <a href="/" class="volver-button">Volver</a>
+
+   <script>
+      // ============================================
+      // FUNCIÓN PARA BUSCAR PELÍCULAS
+      // ============================================
+      async function searchSessions() {
+         const termino = document.getElementById('searchInput').value.trim();
+         const mensajeDiv = document.getElementById('mensaje');
+         
+         // Validar que haya algo escrito
+         if (!termino) {
+            mensajeDiv.innerHTML = '❌ Por favor, escribe algo para buscar';
+            return;
+         }
+
+         // Mostrar mensaje de carga
+         mensajeDiv.innerHTML = '🔍 Buscando películas...';
+         
+         try {
+            // ENVIAR BÚSQUEDA AL SERVIDOR PYTHON
+            const respuesta = await fetch('/buscar', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({ query: termino })
+            });
+
+            const datos = await respuesta.json();
+            
+            if (datos.success && datos.peliculas.length > 0) {
+               // GUARDAR PELÍCULAS Y REDIRIGIR A LA LISTA
+               localStorage.setItem('peliculas_encontradas', JSON.stringify(datos.peliculas));
+               window.location.href = '/peliculas/lista';
+            } else {
+               mensajeDiv.innerHTML = '😔 No se encontraron películas con ese término';
+            }
+            
+         } catch (error) {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '❌ Error al conectar con el servidor. ¿Está ejecutándose Flask?';
+         }
+      }
+
+      // Permitir buscar con Enter
+      document.getElementById('searchInput').addEventListener('keypress', function(e) {
+         if (e.key === 'Enter') {
+            searchSessions();
+         }
+      });
+   </script>
+</body>
+</html>

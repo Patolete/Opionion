@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opinion - Resultados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inknut Antiqua', serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header con logo */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .cebolla-logo {
+            width: 50px;
+            height: 50px;
+            margin: 0 10px;
+        }
+
+        /* Líneas onduladas */
+        .waves-container {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            margin: 20px 0;
+        }
+
+        .wave-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+        }
+
+        .wave-line:first-child {
+            top: 0;
+            clip-path: polygon(0 50%, 15% 20%, 30% 50%, 45% 80%, 60% 50%, 75% 20%, 90% 50%, 100% 50%, 100% 100%, 0% 100%);
+        }
+
+        .wave-line:last-child {
+            top: 10px;
+            clip-path: polygon(0 50%, 10% 80%, 25% 20%, 40% 80%, 55% 20%, 70% 80%, 85% 20%, 100% 50%, 100% 100%, 0% 100%);
+        }
+
+        /* Lista de películas */
+        .movies-list {
+            margin: 30px 0;
+        }
+
+        /* Card de película */
+        .movie-item {
+            background: #8b6b9e;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* Header de la película */
+        .movie-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .movie-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .movie-title-input {
+            flex: 1;
+            background: #e8e8e8;
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 500;
+            margin-right: 15px;
+            pointer-events: none;
+            color: #333;
+        }
+
+        .movie-author {
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+
+        .movie-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .movie-icon.blue {
+            background: linear-gradient(135deg, #64b5f6, #2196f3);
+        }
+
+        .movie-icon.yellow {
+            background: linear-gradient(135deg, #ffd54f, #ffc107);
+        }
+
+        .movie-icon.green {
+            background: linear-gradient(135deg, #81c784, #4caf50);
+        }
+
+        /* Contenido expandible */
+        .movie-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 25px;
+        }
+
+        .movie-item.expanded .movie-content {
+            max-height: 800px;
+            padding: 0 25px 25px 25px;
+        }
+
+        .movie-description {
+            background: #e8e8e8;
+            border: 2px solid #4a3654;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .movie-rating {
+            background: rgba(255, 215, 79, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Botón volver */
+        .volver-button {
+            display: inline-block;
+            background: #8b6b9e;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #6b4b7e;
+        }
+
+        .volver-button:hover {
+            background: #6b4b7e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 107, 158, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-container {
+                font-size: 2rem;
+            }
+
+            .movie-header {
+                flex-wrap: wrap;
+                padding: 15px;
+            }
+
+            .movie-title-input {
+                font-size: 0.9rem;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" class="logo-container">
+                <span>Opi</span>
+                <span class="cebolla-logo">🧅</span>
+                <span>nion</span>
+            </a>
+        </div>
+
+        <!-- Líneas onduladas -->
+        <div class="waves-container">
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+        </div>
+
+        <!-- Lista de películas -->
+        <div class="movies-list" id="moviesList">
+            <div class="no-results">Cargando películas...</div>
+        </div>
+
+        <!-- Líneas onduladas inferiores -->
+        <div class="waves-container">
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+        </div>
+
+        <!-- Botón volver -->
+        <a href="/peliculas" class="volver-button">← Nueva Búsqueda</a>
+    </div>
+
+    <script>
+        // ============================================
+        // CARGAR PELÍCULAS DESDE PYTHON
+        // ============================================
+        
+        // Obtener películas guardadas del localStorage
+        const peliculasGuardadas = localStorage.getItem('peliculas_encontradas');
+        
+        if (!peliculasGuardadas) {
+            // Si no hay películas, redirigir al buscador
+            document.getElementById('moviesList').innerHTML = 
+                '<div class="no-results">No hay resultados. <a href="/peliculas">Hacer búsqueda</a></div>';
+        } else {
+            // Parsear las películas de JSON
+            const peliculas = JSON.parse(peliculasGuardadas);
+            renderMovies(peliculas);
+        }
+
+        // ============================================
+        // FUNCIÓN PARA RENDERIZAR PELÍCULAS
+        // ============================================
+        function renderMovies(peliculas) {
+            const container = document.getElementById('moviesList');
+            
+            if (peliculas.length === 0) {
+                container.innerHTML = '<div class="no-results">😔 No se encontraron películas</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+
+            peliculas.forEach(pelicula => {
+                const movieItem = document.createElement('div');
+                movieItem.className = 'movie-item';
+                movieItem.dataset.id = pelicula.id;
+
+                movieItem.innerHTML = `
+                    <div class="movie-header" onclick="toggleMovie(${pelicula.id})">
+                        <input type="text" class="movie-title-input" value="${pelicula.title}" readonly>
+                        <span class="movie-author">By ${pelicula.author}</span>
+                        <span class="movie-icon ${pelicula.iconColor}">🧅</span>
+                    </div>
+                    <div class="movie-content">
+                        ${pelicula.rating > 0 ? `
+                            <div class="movie-rating">
+                                ⭐ Calificación: ${pelicula.rating}/10
+                            </div>
+                        ` : ''}
+                        <div class="movie-description">
+                            ${pelicula.description}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(movieItem);
+            });
+        }
+
+        // ============================================
+        // FUNCIÓN PARA EXPANDIR/CONTRAER PELÍCULA
+        // ============================================
+        function toggleMovie(id) {
+            const movieItem = document.querySelector(`.movie-item[data-id="${id}"]`);
+            const allMovies = document.querySelectorAll('.movie-item');
+            
+            // Cerrar todas las demás películas
+            allMovies.forEach(item => {
+                if (item.dataset.id != id) {
+                    item.classList.remove('expanded');
+                }
+            });
+
+            // Toggle de la película clickeada
+            movieItem.classList.toggle('expanded');
+        }
+
+        // Cerrar película al presionar ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.movie-item').forEach(item => {
+                    item.classList.remove('expanded');
+                });
+            }
+        });
+
+        console.log('✅ Películas cargadas desde Python:', peliculas ? peliculas.length : 0);
+    </script>
+</body>
+</html>

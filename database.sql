@@ -1,6 +1,6 @@
 -- ============================================
 -- BASE DE DATOS PARA BUSCADOR DE PELÍCULAS
--- Archivo: movies_database.sql
+-- Archivo: database.sql (CORREGIDO)
 -- ============================================
 
 -- Crear la base de datos
@@ -13,13 +13,14 @@ CREATE TABLE genres (
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
--- Tabla principal de películas
+-- Tabla principal de películas (SIMPLIFICADA)
 CREATE TABLE movies (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
-    user VARCHAR(50),
-    rating INT(1,4), -- calificación del 1.0 al 10.0
-    synopsis TEXT
+    user VARCHAR(50) NOT NULL,
+    rating DECIMAL(3,1),
+    synopsis TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insertar géneros
@@ -29,141 +30,56 @@ INSERT INTO genres (name) VALUES
 ('Documental'), ('Musical'), ('Crimen'), ('Fantasía'), ('Guerra'), ('Western');
 
 -- ============================================
--- INSERTAR PELÍCULAS POPULARES PRE-CARGADAS
+-- INSERTAR PELÍCULAS (CORREGIDO)
 -- ============================================
 
-INSERT INTO movies (title, original_title, year, duration, genre_id, director, rating, synopsis, poster_url) VALUES
+INSERT INTO movies (title, user, rating, synopsis) VALUES
+-- Películas de ejemplo
+('Los Vengadores', 'PapuAnashei33', 8.0, 'Los superhéroes más poderosos de la Tierra deben unirse para derrotar a Loki y su ejército alienígena.'),
+('Mad Max: Furia en la Carretera', 'ActionFan', 8.1, 'En un mundo post-apocalíptico, Max se ve envuelto en una guerra entre un tirano y un grupo de mujeres rebeldes.'),
+('John Wick', 'MovieLover', 7.4, 'Un ex-asesino a sueldo sale de su retiro para rastrear a los gángsters que mataron a su perro.'),
 
--- Películas de Acción
-('Los Vengadores', "PapuAnashei33",'Los superhéroes más poderosos de la Tierra deben unirse para derrotar a Loki y su ejército alienígena.'),
-('Mad Max: Furia en la Carretera', "PAPU" ,'En un mundo post-apocalíptico, Max se ve envuelto en una guerra entre un tirano y un grupo de mujeres rebeldes.'),
-('John Wick', "PAPU" ,'Un ex-asesino a sueldo sale de su retiro para rastrear a los gángsters que mataron a su perro.'),
+('Inception', 'DreamerX', 8.8, 'Un ladrón que se infiltra en los sueños de otros debe realizar el trabajo imposible: la inception.'),
+('Blade Runner 2049', 'SciFiFan', 8.0, 'Un joven blade runner descubre un secreto que lo lleva a buscar a Rick Deckard.'),
+('Matrix', 'Topacio33', 8.7, 'Un programador descubre que la realidad que conoce es una simulación controlada por máquinas.'),
+('Interestelar', 'SpaceGeek', 8.6, 'Un grupo de exploradores viaja a través de un agujero de gusano para salvar a la humanidad.'),
 
--- Películas de Ciencia Ficción
-('Inception', "PAPU" ,'Un ladrón que se infiltra en los sueños de otros debe realizar el trabajo imposible: la inception.'),
-('Blade Runner 2049', "PAPU" ,'Un joven blade runner descubre un secreto que lo lleva a buscar a Rick Deckard.'),
-('Matrix', "PAPU" ,'Un programador descubre que la realidad que conoce es una simulación controlada por máquinas.'),
-('Interestelar', "PAPU" ,'Un grupo de exploradores viaja a través de un agujero de gusano para salvar a la humanidad.'),
+('El Padrino', 'ClassicFilm', 9.2, 'La saga de una familia de mafiosos italoamericanos en Nueva York.'),
+('Cadena Perpetua', 'DramaKing', 9.3, 'Dos hombres encarcelados forjan una amistad a lo largo de los años en prisión.'),
+('Forrest Gump', 'HeartWarmer', 8.8, 'La historia de un hombre con discapacidad intelectual que vive eventos históricos extraordinarios.'),
 
--- Películas de Drama
-('El Padrino', "PAPU" ,'La saga de una familia de mafiosos italoamericanos en Nueva York.'),
-('Cadena Perpetua', "PAPU" ,'Dos hombres encarcelados forjan una amistad a lo largo de los años en prisión.'),
-('Forrest Gump', "PAPU" ,'La historia de un hombre con discapacidad intelectual que vive eventos históricos extraordinarios.'),
+('El Gran Lebowski', 'ComedyFan', 8.1, 'Un vago de Los Ángeles se ve envuelto en un caso de secuestro por error de identidad.'),
+('Superbad', 'TeenComedy', 7.6, 'Dos amigos intentan conseguir alcohol para una fiesta antes de graduarse.'),
+('Mi Pobre Angelito', 'FamilyFun', 7.7, 'Un niño de 8 años debe defender su casa de dos ladrones torpes.'),
 
--- Películas de Comedia
-('El Gran Lebowski', "PAPU" ,'Un vago de Los Ángeles se ve envuelto en un caso de secuestro por error de identidad.'),
-('Superbad', "PAPU" ,'Dos amigos intentan conseguir alcohol para una fiesta antes de graduarse.'),
-('Mi Pobre Angelito', "PAPU" ,'Un niño de 8 años debe defender su casa de dos ladrones torpes.'),
+('Toy Story', 'PixarLover', 8.3, 'Los juguetes de un niño cobran vida cuando él no está presente.'),
+('El Rey León', 'DisneyFan', 8.5, 'Un joven león debe reclamar su lugar como rey de la selva.'),
+('Coco', 'MexicanCulture', 8.4, 'Un niño viaja a la Tierra de los Muertos para descubrir su historia familiar.'),
+('Spider-Man: Un Nuevo Universo', 'MarvelFan', 8.4, 'Miles Morales se convierte en Spider-Man y conoce a otros Spider-People de dimensiones alternativas.'),
 
--- Películas de Animación
-('Toy Story', "PAPU" ,'Los juguetes de un niño cobran vida cuando él no está presente.'),
-('El Rey León', "PAPU" ,'Un joven león debe reclamar su lugar como rey de la selva.'),
-('Coco', "PAPU" ,'Un niño viaja a la Tierra de los Muertos para descubrir su historia familiar.'),
-('Spider-Man: Un Nuevo Universo', "PAPU" ,'Miles Morales se convierte en Spider-Man y conoce a otros Spider-People de dimensiones alternativas.'),
+('El Exorcista', 'HorrorFan', 8.1, 'Una niña es poseída por un demonio y sus madres buscan ayuda de dos sacerdotes.'),
+('Halloween', 'SlasherLover', 7.7, 'Un asesino en serie escapa de un hospital psiquiátrico y regresa a su ciudad natal.'),
+('Eso', 'StephenKing', 7.3, 'Un grupo de niños se enfrenta a una entidad maléfica que aterroriza su pueblo.'),
 
--- Películas de Terror
-('El Exorcista', "PAPU" ,'Una niña es poseída por un demonio y sus madres buscan ayuda de dos sacerdotes.'),
-('Halloween', "PAPU" ,'Un asesino en serie escapa de un hospital psiquiátrico y regresa a su ciudad natal.'),
-('Eso', "PAPU" ,'Un grupo de niños se enfrenta a una entidad malévola que aterroriza su pueblo.'),
+('Titanic', 'RomanticSoul', 7.9, 'Una historia de amor a bordo del famoso barco condenado.'),
+('El Diario de Noah', 'LoveStory', 7.8, 'Un hombre lee a su esposa con demencia la historia de su amor juvenil.'),
+('Eterno Resplandor de una Mente sin Recuerdos', 'IndieFilm', 8.3, 'Una pareja decide borrar sus recuerdos el uno del otro después de una ruptura dolorosa.'),
 
--- Películas de Romance
-('Titanic', "PAPU" ,'Una historia de amor a bordo del famoso barco condenado.'),
-('El Diario de Noah', "PAPU" ,'Un hombre lee a su esposa con demencia la historia de su amor juvenil.'),
-('Eterno Resplandor de una Mente sin Recuerdos', "PAPU" ,'Una pareja decide borrar sus recuerdos el uno del otro después de una ruptura dolorosa.'),
+('El Silencio de los Corderos', 'ThrillerFan', 8.6, 'Una agente del FBI busca la ayuda de Hannibal Lecter para capturar a otro asesino en serie.'),
+('Seven', 'DarkCinema', 8.6, 'Dos detectives investigan una serie de asesinatos basados en los siete pecados capitales.'),
+('El Sexto Sentido', 'TwistEnding', 8.2, 'Un psicólogo infantil trata a un niño que afirma poder ver personas muertas.'),
 
--- Películas de Thriller
-('El Silencio de los Corderos', "PAPU" ,'Una agente del FBI busca la ayuda de Hannibal Lecter para capturar a otro asesino en serie.'),
-('Seven', "PAPU" ,'Dos detectives investigan una serie de asesinatos basados en los siete pecados capitales.'),
-('El Sexto Sentido', "PAPU" ,'Un psicólogo infantil trata a un niño que afirma poder ver personas muertas.'),
+('Casablanca', 'GoldenAge', 8.5, 'Durante la Segunda Guerra Mundial, un estadounidense debe elegir entre el amor y la virtud.'),
+('Ciudadano Kane', 'FilmHistory', 8.3, 'La vida de un magnate de los medios contada a través de las investigaciones sobre su última palabra.'),
+('Psicosis', 'HitchcockFan', 8.5, 'Una mujer que huye con dinero robado se hospeda en un motel aislado.'),
 
--- Películas Clásicas
-('Casablanca', "PAPU" ,'Durante la Segunda Guerra Mundial, un estadounidense debe elegir entre el amor y la virtud.'),
-('Ciudadano Kane', "PAPU" ,'La vida de un magnate de los medios contada a través de las investigaciones sobre su última palabra.'),
-('Psicosis', "PAPU" ,'Una mujer que huye con dinero robado se hospeda en un motel aislado.'),
-
--- Películas Recientes
-('Parasitos', "PAPU" ,'Una familia pobre se infiltra en la vida de una familia rica con consecuencias inesperadas.'),
-('Joker', "PAPU" ,'La transformación de Arthur Fleck en el icónico villano de Gotham City.'),
-('1917', "PAPU" ,'Dos soldados británicos deben entregar un mensaje crucial durante la Primera Guerra Mundial.' );
+('Parasitos', 'KoreanCinema', 8.5, 'Una familia pobre se infiltra en la vida de una familia rica con consecuencias inesperadas.'),
+('Joker', 'DCFan', 8.4, 'La transformación de Arthur Fleck en el icónico villano de Gotham City.'),
+('1917', 'WarFilm', 8.2, 'Dos soldados británicos deben entregar un mensaje crucial durante la Primera Guerra Mundial.');
 
 -- ============================================
--- ÍNDICES PARA OPTIMIZAR BÚSQUEDAS
+-- ÍNDICES PARA BÚSQUEDAS RÁPIDAS
 -- ============================================
 
--- Índice para búsquedas por título
 CREATE INDEX idx_movie_title ON movies(title);
-CREATE INDEX idx_movie_original_title ON movies(user);
-
-
--- ============================================
--- VISTAS ÚTILES PARA CONSULTAS COMPLEJAS
--- ============================================
-
--- Vista para películas con información del género
-CREATE VIEW movies_with_genre AS
-SELECT 
-    m.id,
-    m.title,
-    m.user,
-    m.rating,
-    m.synopsis,
-FROM movies m
-LEFT JOIN genres g ON m.genre_id = g.id;
-
--- ============================================
--- PROCEDIMIENTOS ALMACENADOS PARA BÚSQUEDAS
--- ============================================
-
-DELIMITER //
-
--- Procedimiento para buscar películas por nombre
-CREATE PROCEDURE SearchMoviesByName(IN search_term VARCHAR(255))
-BEGIN
-    SELECT 
-        m.id,
-        m.title,
-        m.user
-        m.synopsis,
-        m.poster_url
-    FROM movies m
-    LEFT JOIN genres g ON m.genre_id = g.id
-    WHERE m.title LIKE CONCAT('%', search_term, '%')
-       OR m.original_title LIKE CONCAT('%', search_term, '%')
-    ORDER BY m.rating DESC, m.year DESC;
-END //
-
--- Procedimiento para buscar por género
-CREATE PROCEDURE SearchMoviesByGenre(IN genre_name VARCHAR(50))
-BEGIN
-    SELECT 
-        m.id,
-        m.title,
-        m.user,
-        m.rating,
-        m.synopsis,
-    FROM movies m
-    LEFT JOIN genres g ON m.genre_id = g.id
-    WHERE g.name = genre_name
-    ORDER BY m.rating DESC, m.year DESC;
-END //
-
-DELIMITER ;
-
--- ============================================
--- CONSULTAS DE EJEMPLO PARA TESTING
--- ============================================
-
--- Buscar todas las películas
--- SELECT * FROM movies_with_genre ORDER BY rating DESC;
-
--- Buscar películas por nombre (ejemplo)
--- CALL SearchMoviesByName('Matrix');
-
--- Buscar películas de un género específico
--- CALL SearchMoviesByGenre('Ciencia Ficción');
-
--- Buscar películas por año
--- SELECT * FROM movies_with_genre WHERE year = 2019;
-
--- Top 10 películas mejor calificadas
--- SELECT * FROM movies_with_genre ORDER BY rating DESC LIMIT 10;
+CREATE INDEX idx_movie_user ON movies(user);
