@@ -46,7 +46,7 @@
          }
 
          // Mostrar mensaje de carga
-         mensajeDiv.innerHTML = '🔍 Buscando películas...';
+         mensajeDiv.innerHTML = '🔍 Buscando películas o usuarios...';
          
          try {
             // ENVIAR BÚSQUEDA AL SERVIDOR PYTHON
@@ -65,7 +65,7 @@
                localStorage.setItem('peliculas_encontradas', JSON.stringify(datos.peliculas));
                window.location.href = '/peliculas/lista';
             } else {
-               mensajeDiv.innerHTML = '😔 No se encontraron películas con ese término';
+               mensajeDiv.innerHTML = '😔 No se encontraron películas o usuarios con ese término';
             }
             
          } catch (error) {

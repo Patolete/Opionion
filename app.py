@@ -1,8 +1,8 @@
 # ============================================
-# APP.PY - Flask simple con MySQL
+# APP.PY - Flask + MySQL (CORREGIDO)
 # ============================================
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 import mysql.connector
 from mysql.connector import Error
 
@@ -14,162 +14,217 @@ app = Flask(__name__)
 DB_CONFIG = {
     'host': 'localhost',
     'database': 'opinion_movies',
-    'user': 'root',              # CAMBIAR si tu usuario es diferente
-    'password': 'root',              # CAMBIAR si tienes contraseña
+    'user': 'root',
+    'password': 'root',
     'charset': 'utf8mb4'
 }
 
 # ============================================
-# FUNCIÓN PARA CONECTAR A LA BASE DE DATOS
+# FUNCIÓN PARA CONECTAR A LA DB
 # ============================================
 def conectar_db():
-    """Conecta con MySQL y retorna la conexión"""
     try:
-        conexion = mysql.connector.connect(**DB_CONFIG)
-        if conexion.is_connected():
-            print("✅ Conectado a MySQL")
-            return conexion
+        return mysql.connector.connect(**DB_CONFIG)
     except Error as e:
-        print(f"❌ Error de conexión: {e}")
+        print("❌ Error al conectar:", e)
         return None
 
 # ============================================
 # FUNCIÓN PARA BUSCAR PELÍCULAS
 # ============================================
-def buscar_peliculas(termino_busqueda):
-    """
-    Busca películas en la base de datos por título o usuario
-    Retorna una lista de películas
-    """
+def buscar_peliculas(termino):
     conexion = conectar_db()
     if not conexion:
         return []
-    
+
     try:
         cursor = conexion.cursor(dictionary=True)
-        
-        # SQL para buscar por título o usuario
+
         sql = """
-            SELECT id, title, user, rating, synopsis 
-            FROM movies 
+            SELECT id, title, user, rating, synopsis
+            FROM movies
             WHERE title LIKE %s OR user LIKE %s
             ORDER BY rating DESC
         """
-        
-        # Agregar % para buscar cualquier coincidencia
-        patron_busqueda = f"%{termino_busqueda}%"
-        cursor.execute(sql, (patron_busqueda, patron_busqueda))
-        
-        # Obtener resultados
+
+        patron = f"%{termino}%"
+        cursor.execute(sql, (patron, patron))
+
         peliculas = cursor.fetchall()
-        
+
         cursor.close()
         conexion.close()
-        
-        print(f"✅ Encontradas {len(peliculas)} películas")
+
         return peliculas
-        
+
     except Error as e:
-        print(f"❌ Error en búsqueda: {e}")
+        print("❌ Error en búsqueda:", e)
         return []
 
 # ============================================
-# RUTAS DE LA APLICACIÓN
+# RUTAS NORMALES (HTML)
 # ============================================
-
 @app.route('/')
 def home():
-    """Página principal"""
     return render_template('index.html')
-
-@app.route('/usuarios')
-def usuarios():
-    """Página de búsqueda de usuarios"""
-    return render_template('buscador_usuarios.html')
 
 @app.route('/peliculas')
 def peliculas():
-    """Página de búsqueda de películas"""
     return render_template('connected_buscador.html')
 
-@app.route('/perfil')
-def perfil():
-    """Página de perfil"""
-    return render_template('perfil.html')
-
 @app.route('/buscar_p')
-def perfil():
-    """Página de busqueda de perfil"""
+def buscar_perfil():
     return render_template('buscar_perfil.html')
 
 # ============================================
-# RUTA PARA BUSCAR PELÍCULAS (API)
+# PERFIL (CORREGIDO)
+# ============================================
+@app.route('/perfil')
+def perfil():
+    username = request.args.get("user", "")
+
+    # NO BORRO NADA: solo agrego obtener reseñas del usuario
+    conexion = conectar_db()
+    if not conexion:
+        return render_template('perfil.html', user=username, reseñas=[])
+
+    cursor = conexion.cursor()
+
+    # Obtener ID del usuario
+    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+    row = cursor.fetchone()
+
+    if not row:
+        return render_template('perfil.html', user=username, reseñas=[])
+
+    user_id = row[0]
+
+    # Obtener reseñas
+    cursor.execute("""
+        SELECT movies.title, reviews.rating, reviews.comment, reviews.id
+        FROM reviews
+        JOIN movies ON movies.id = reviews.movie_id
+        WHERE reviews.user_id = %s
+    """, (user_id,))
+
+    reseñas = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return render_template('perfil.html', user=username, reseñas=reseñas)
+
+@app.route('/peliculas/lista')
+def peliculas_lista():
+    return render_template('connected_expandable_list.html')
+
+# ============================================
+# API BUSCAR PELÍCULAS
 # ============================================
 @app.route('/buscar', methods=['POST'])
 def buscar():
-    """
-    Recibe la búsqueda del formulario y retorna películas en JSON
-    """
     try:
-        # Obtener el término de búsqueda del formulario
         data = request.get_json()
         termino = data.get('query', '').strip()
-        
-        print(f"🔍 Buscando: '{termino}'")
-        
+
         if not termino:
-            return jsonify({
-                'success': False,
-                'message': 'Debes ingresar un término de búsqueda',
-                'peliculas': []
-            })
-        
-        # Buscar en la base de datos
+            return jsonify({'success': False, 'message': 'Debes escribir algo', 'peliculas': []})
+
         peliculas = buscar_peliculas(termino)
-        
-        # Convertir a formato para el frontend
+
+        colores = ['blue', 'yellow', 'green']
         peliculas_formateadas = []
-        colores = ['blue', 'yellow', 'green']  # Colores para los iconos
-        
-        for i, pelicula in enumerate(peliculas):
+
+        for i, p in enumerate(peliculas):
             peliculas_formateadas.append({
-                'id': pelicula['id'],
-                'title': pelicula['title'],
-                'author': pelicula['user'],
-                'rating': float(pelicula['rating']) if pelicula['rating'] else 0,
-                'description': pelicula['synopsis'],
-                'iconColor': colores[i % 3],  # Rotar entre los 3 colores
-                'comments': []  # Por ahora sin comentarios
+                'id': p['id'],
+                'title': p['title'],
+                'author': p['user'],
+                'rating': float(p['rating']) if p['rating'] else 0,
+                'description': p['synopsis'],
+                'iconColor': colores[i % len(colores)]
             })
-        
+
         return jsonify({
             'success': True,
             'message': f'Se encontraron {len(peliculas)} películas',
             'peliculas': peliculas_formateadas
         })
-        
+
     except Exception as e:
-        print(f"❌ Error: {e}")
-        return jsonify({
-            'success': False,
-            'message': 'Error en el servidor',
-            'peliculas': []
-        })
+        print("❌ Error:", e)
+        return jsonify({'success': False, 'message': 'Error en el servidor', 'peliculas': []})
 
 # ============================================
-# RUTA PARA MOSTRAR LISTA DE PELÍCULAS
+# VER RESEÑAS DEL USUARIO (SIN CAMBIOS)
 # ============================================
-@app.route('/peliculas/lista')
-def peliculas_lista():
-    """Muestra la lista expandible de películas"""
-    return render_template('connected_expandable_list.html')
+@app.route('/usuarios/reseñas')
+def usuarios_resenas():
+    username = request.args.get("username")
+
+    if not username:
+        return "Falta el parámetro ?username=usuario"
+
+    conexion = conectar_db()
+    if not conexion:
+        return "❌ Error de conexión"
+
+    try:
+        cursor = conexion.cursor()
+
+        # Obtener ID del usuario
+        cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+        row = cursor.fetchone()
+
+        if not row:
+            return f"No existe el usuario: {username}"
+
+        user_id = row[0]
+
+        cursor.execute("""
+            SELECT movies.title, reviews.rating, reviews.comment, reviews.id
+            FROM reviews
+            JOIN movies ON movies.id = reviews.movie_id
+            WHERE reviews.user_id = %s
+        """, (user_id,))
+
+        reseñas = cursor.fetchall()
+
+        cursor.close()
+        conexion.close()
+
+        return render_template(
+            "connected_expandable_list.html",
+            reseñas=reseñas,
+            username=username
+        )
+
+    except Error as e:
+        return f"❌ Error en la consulta: {e}"
 
 # ============================================
-# EJECUTAR APLICACIÓN
+# ElIMINAR RESEÑA
+# ============================================
+@app.route("/eliminar_resena/<id>")
+def eliminar_resena(id):
+    conexion = conectar_db()
+    if not conexion:
+        return "❌ Error de conexión"
+
+    cursor = conexion.cursor()
+    cursor.execute("DELETE FROM reviews WHERE id = %s", (id,))
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+    return redirect(request.referrer or "/")
+
+# ============================================
+# INICIAR SERVIDOR
 # ============================================
 if __name__ == '__main__':
-    print("\n" + "="*50)
-    print("🎬 INICIANDO SERVIDOR OPINION")
+    print("\n==============================")
+    print("🎬 Servidor OPINION iniciado")
     print("🌐 http://localhost:5000")
-    print("="*50 + "\n")
+    print("==============================\n")
     app.run(debug=True)

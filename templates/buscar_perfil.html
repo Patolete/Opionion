@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Opinion</title>
+   <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+   <div class="container">
+      <div class="header">
+         <a href='/' class="logo">Opi</a>
+         <a href='/'><img class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo"></a>
+         <a href='/' class="logo">nion</a>
+      </div>
+   </div>
+
+   <div class="search-box1">
+      <input type="text" id="searchInput" placeholder="Ingresa tu nombre de usuario">
+
+      <!-- ✔ Arreglo: mandar el usuario por GET -->
+      <a class="btn btn-secondary" onclick="
+         let u = document.getElementById('searchInput').value;
+         window.location = '/perfil?user=' + u;
+      ">Iniciar Sesion</a>
+   </div>
+
+   <img class="wave" src="../static/img/ondas.png">
+   <a href='/' class="volver-button">Volver</a>
+</body>
+</html>

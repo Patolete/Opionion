@@ -12,22 +12,41 @@
 <body>
    <div class="container">
       <div class="header">
-         <a href='/' class="logo">
-            Opi
-         </a>
-         <a href='/'>
-            <img href='/' class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo">
-         </a>
-         <a href='/' class="logo">
-            nion
-         </a>
+         <a href='/' class="logo">Opi</a>
+         <a href='/'><img class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo"></a>
+         <a href='/' class="logo">nion</a>
       </div>
+   
+      <img class="wave" src="../static/img/ondas.png">
+            
+      <nav class="navigation">
+         <a href="/usuarios/reseñas?username={{ user }}" class="nav-button">Ver/Eliminar</a>
+         <a href='/peliculas' class="nav-button">Crear</a>
+      </nav>
    </div>
-   <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Nombre ">
-      <button class="btn btn-secondary" onclick="searchSessions()">Buscar</button>
-   </div>
-   <img class="wave" src="../static/img/ondas.png">
-   <a href='/' class="volver-button">Volver</a>
+
+   {% if reseñas %}
+      {% for r in reseñas %}
+      <div class="movie-item">
+         <div class="movie-header">
+            <input type="text" class="movie-title-input" value="{{ r[0] }}" readonly>
+            <span class="movie-author">{{ user }}</span>
+            <span class="movie-icon blue">🧅</span>
+         </div>
+         <div class="movie-content expanded">
+            <div class="movie-rating">⭐ {{ r[1] }}/10</div>
+            <div class="movie-description">{{ r[2] }}</div>
+
+            <a href="/eliminar_resena/{{ r[3] }}" class="volver-button" style="background:#a33;">
+               Eliminar
+            </a>
+         </div>
+      </div>
+      {% endfor %}
+   {% else %}
+      <p style="text-align:center; font-size:22px; margin-top:20px;">No tienes reseñas aún.</p>
+   {% endif %}
+
+   <a href='/buscar_p' class="volver-button">Volver</a>
 </body>
 </html>
