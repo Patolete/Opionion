@@ -97,6 +97,11 @@ def perfil():
     """Página de perfil"""
     return render_template('perfil.html')
 
+@app.route('/buscar_p')
+def perfil():
+    """Página de busqueda de perfil"""
+    return render_template('buscar_perfil.html')
+
 # ============================================
 # RUTA PARA BUSCAR PELÍCULAS (API)
 # ============================================
