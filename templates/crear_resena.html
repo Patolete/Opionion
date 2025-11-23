@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Opinion - Crear Reseña</title>
+   <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+   <style>
+      .container {
+         max-width: 800px;
+         margin: 0 auto;
+         padding: 20px;
+         max-height: 400px;
+         margin-bottom: 20px;
+      }
+
+      .header {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         margin: 20px;
+         padding: 0px;
+         margin-bottom: 0px;
+      }
+
+      .form-container {
+         max-width: 600px;
+         margin: 30px auto;
+         padding: 30px;
+         background: #ffffff;
+         border-radius: 15px;
+         box-shadow: 0 14px 18px rgba(0,0,0,0.1);
+      }
+
+      .form-group {
+         margin-bottom: 20px;
+         display: flex;
+         flex-direction: column;
+      }
+
+      .form-group label {
+         font-size: 1.1rem;
+         margin-bottom: 8px;
+         font-weight: 600;
+         color: #333;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+         padding: 12px;
+         border: 2px solid #333;
+         border-radius: 10px;
+         font-size: 1rem;
+         font-family: inherit;
+      }
+
+      .form-group textarea {
+         resize: vertical;
+         min-height: 120px;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+         outline: none;
+         border-color: #8b6b9e;
+         box-shadow: 0 0 5px rgba(139, 107, 158, 0.3);
+      }
+
+      .button-group {
+         display: flex;
+         gap: 10px;
+         margin-top: 20px;
+      }
+
+      .btn-submit {
+         flex: 1;
+         padding: 12px;
+         background: #8b6b9e;
+         color: white;
+         border: none;
+         border-radius: 10px;
+         font-size: 1rem;
+         cursor: pointer;
+         font-weight: 600;
+         transition: all 0.3s;
+      }
+
+      .btn-submit:hover {
+         background: #6b4b7e;
+         transform: translateY(-2px);
+      }
+
+      .btn-cancel {
+         flex: 1;
+         padding: 12px;
+         background: #ffffff;
+         color: #333;
+         border: 2px solid #333;
+         border-radius: 10px;
+         font-size: 1rem;
+         cursor: pointer;
+         font-weight: 600;
+         transition: all 0.3s;
+         text-decoration: none;
+         text-align: center;
+      }
+
+      .btn-cancel:hover {
+         background: #ffffff;
+         color: white;
+      }
+
+      .mensaje {
+         margin: 20px 0;
+         padding: 15px;
+         border-radius: 10px;
+         text-align: center;
+         display: none;
+         font-weight: 600;
+      }
+
+      .mensaje.error {
+         background: #ffcccc;
+         color: #cc0000;
+         border: 2px solid #cc0000;
+         display: block;
+      }
+
+      .mensaje.success {
+         background: #ccffcc;
+         color: #00cc00;
+         border: 2px solid #00cc00;
+         display: block;
+      }
+
+      .rating-group {
+         display: flex;
+         gap: 10px;
+         align-items: center;
+      }
+
+      .star {
+         font-size: 2rem;
+         cursor: pointer;
+         color: #ddd;
+         transition: color 0.2s;
+      }
+
+      .star:hover,
+      .star.active {
+         color: #ffc107;
+      }
+
+      .username-info {
+         background: #ffffff;
+         padding: 10px;
+         border-radius: 8px;
+         margin-bottom: 15px;
+         font-size: 0.9rem;
+      }
+   </style>
+</head>
+<body>
+   <div class="container">
+      <div class="header">
+         <a href='/' class="logo">Opi</a>
+         <a href='/'><img class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo"></a>
+         <a href='/' class="logo">nion</a>
+      </div>
+   </div>
+
+<div class="form-container">
+      <h2 style="text-align: center; margin-bottom: 20px;">✍️ Crear una Nueva Reseña</h2>
+      
+      <div id="mensaje" class="mensaje"></div>
+
+      <div class="username-info">
+         <strong>Usuario:</strong> <span id="usernameDisplay">{{ user }}</span>
+      </div>
+
+      <form id="reviewForm">
+         <div class="form-group">
+            <label for="movie">Película *</label>
+            <select id="movie" required>
+               <option value="">-- Selecciona una película --</option>
+            </select>
+         </div>
+
+         <div class="form-group">
+            <label>Calificación (1-5 estrellas) *</label>
+            <div class="rating-group">
+               <span class="star" onclick="setRating(1)">★</span>
+               <span class="star" onclick="setRating(2)">★</span>
+               <span class="star" onclick="setRating(3)">★</span>
+               <span class="star" onclick="setRating(4)">★</span>
+               <span class="star" onclick="setRating(5)">★</span>
+               <span id="ratingDisplay" style="margin-left: 10px;">0/5</span>
+            </div>
+            <input type="hidden" id="rating" value="0" required>
+         </div>
+
+         <div class="form-group">
+            <label for="comment">Comentario (opcional)</label>
+            <textarea id="comment" placeholder="Escribe tu opinión sobre esta película..."></textarea>
+         </div>
+
+         <div class="button-group">
+            <button type="submit" class="btn-submit">✅ Crear Reseña</button>
+            <button type="button" class="btn-cancel" onclick="volverAtras()">❌ Cancelar</button>
+         </div>
+      </form>
+   </div>
+
+   <a href='/' class="volver-button">Volver</a>
+
+   <script>
+      let username = "{{ user }}";
+      let selectedRating = 0;
+
+      // Cargar películas al iniciar
+      document.addEventListener('DOMContentLoaded', function() {
+         if (!username) {
+            mostrarMensaje('❌ No se especificó usuario. Vuelve a intentar.', 'error');
+         } else {
+            cargarPeliculas();
+         }
+      });
+
+      // ============================================
+      // CARGAR PELÍCULAS
+      // ============================================
+      async function cargarPeliculas() {
+         try {
+            const response = await fetch('/api/peliculas');
+            const data = await response.json();
+
+            if (data.success) {
+               const select = document.getElementById('movie');
+               data.peliculas.forEach(pelicula => {
+                  const option = document.createElement('option');
+                  option.value = pelicula['id'];
+                  option.textContent = pelicula['title'];
+                  select.appendChild(option);
+               });
+            }
+         } catch (error) {
+            console.error('Error al cargar películas:', error);
+         }
+      }
+
+      // ============================================
+      // SISTEMA DE CALIFICACIÓN CON ESTRELLAS
+      // ============================================
+      function setRating(stars) {
+         selectedRating = stars;
+         document.getElementById('rating').value = stars;
+         document.getElementById('ratingDisplay').textContent = stars + '/5';
+
+         // Actualizar estrellas visuales
+         const starElements = document.querySelectorAll('.star');
+         starElements.forEach((star, index) => {
+            if (index < stars) {
+               star.classList.add('active');
+            } else {
+               star.classList.remove('active');
+            }
+         });
+      }
+
+      // ============================================
+      // ENVIAR RESEÑA
+      // ============================================
+      document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+         e.preventDefault();
+
+         // Validar datos
+         const movie_id = document.getElementById('movie').value;
+         const rating = document.getElementById('rating').value;
+         const comment = document.getElementById('comment').value;
+
+         if (!movie_id) {
+            mostrarMensaje('❌ Debes seleccionar una película', 'error');
+            return;
+         }
+
+         if (!rating || rating == 0) {
+            mostrarMensaje('❌ Debes dar una calificación', 'error');
+            return;
+         }
+
+         try {
+            const response = await fetch('/crear_resena', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                  username: username,
+                  movie_id: parseInt(movie_id),
+                  rating: parseInt(rating),
+                  comment: comment
+               })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+               mostrarMensaje('✅ ¡Reseña creada correctamente!', 'success');
+               setTimeout(() => {
+                  window.location.href = `/perfil?user=${username}`;
+               }, 1500);
+            } else {
+               mostrarMensaje('❌ ' + data.message, 'error');
+            }
+
+         } catch (error) {
+            console.error('Error:', error);
+            mostrarMensaje('❌ Error al enviar la reseña', 'error');
+         }
+      });
+
+      function mostrarMensaje(texto, tipo) {
+         const messageDiv = document.getElementById('mensaje');
+         messageDiv.textContent = texto;
+         messageDiv.className = 'mensaje ' + tipo;
+      }
+
+      function volverAtras() {
+         window.history.back();
+      }
+   </script>
+</body>
+</html>
