@@ -15,7 +15,7 @@ DB_CONFIG = {
     'host': 'localhost',
     'database': 'opinion_movies',
     'user': 'root',
-    'password': 'root',
+    'password': '2009',
     'charset': 'utf8mb4'
 }
 
