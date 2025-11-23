@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opinion - Resultados</title>
+    <div class="container">
+        <div class="header">
+            <a href='/' class="logo">Opi</a>
+            <a href='/'><img class="cebolla" src="../static/img/cebolla.jpg" alt="Onion Logo"></a>
+            <a href='/' class="logo">nion</a>
+        </div>
+    </div>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,60 +22,54 @@
 
         body {
             font-family: 'Inknut Antiqua', serif;
-            background-color: #f5f5f5;
+            background-color: #ffffff;
             padding: 20px;
             min-height: 100vh;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        .cebolla {
+            width: 100px;
+            height: 150px;
+            top: 20px;
+            right: 20px;
+            border-radius: 50%;
         }
 
-        /* Header con logo */
         .header {
             text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .logo-container {
-            display: inline-flex;
+            display: flex;
+            flex-direction: row;
             align-items: center;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .cebolla-logo {
-            width: 50px;
-            height: 50px;
-            margin: 0 10px;
-        }
-
-        /* Líneas onduladas */
-        .waves-container {
+            margin-left: 450px;
+            padding-top: 0px;
+            margin-top: 30px;
+            margin-bottom: 5px;
             position: relative;
-            width: 100%;
-            height: 20px;
-            margin: 20px 0;
+            z-index: 2;
+            justify-content: space-between;
         }
 
-        .wave-line {
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background-color: #333;
+        .container{
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
         }
 
-        .wave-line:first-child {
-            top: 0;
-            clip-path: polygon(0 50%, 15% 20%, 30% 50%, 45% 80%, 60% 50%, 75% 20%, 90% 50%, 100% 50%, 100% 100%, 0% 100%);
-        }
-
-        .wave-line:last-child {
-            top: 10px;
-            clip-path: polygon(0 50%, 10% 80%, 25% 20%, 40% 80%, 55% 20%, 70% 80%, 85% 20%, 100% 50%, 100% 100%, 0% 100%);
+        .logo {
+            font-family: 'Inknut Antiqua', serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 4rem;
+            font-weight: 300;
+            color: #000000;
+            letter-spacing: 0px;
+            position: relative;
+            display: inline-block;
+            text-decoration: none;
         }
 
         /* Lista de películas */
@@ -223,34 +223,13 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <a href="/" class="logo-container">
-                <span>Opi</span>
-                <span class="cebolla-logo">🧅</span>
-                <span>nion</span>
-            </a>
-        </div>
-
-        <!-- Líneas onduladas -->
-        <div class="waves-container">
-            <div class="wave-line"></div>
-            <div class="wave-line"></div>
-        </div>
-
         <!-- Lista de películas -->
         <div class="movies-list" id="moviesList">
             <div class="no-results">Cargando películas...</div>
         </div>
 
-        <!-- Líneas onduladas inferiores -->
-        <div class="waves-container">
-            <div class="wave-line"></div>
-            <div class="wave-line"></div>
-        </div>
-
         <!-- Botón volver -->
-        <a href="/peliculas" class="volver-button">← Nueva Búsqueda</a>
+        <a href="/buscador" class="volver-button">← Nueva Búsqueda</a>
     </div>
 
     <script>

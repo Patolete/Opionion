@@ -68,7 +68,7 @@ def buscar_peliculas(termino):
 def home():
     return render_template('index.html')
 
-@app.route('/peliculas')
+@app.route('/buscador')
 def peliculas():
     return render_template('connected_buscador.html')
 
